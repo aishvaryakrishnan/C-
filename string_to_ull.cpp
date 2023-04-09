@@ -25,10 +25,6 @@ void encode_in_ull(const char *text, uint64_t *uints)
        uints[uints_cnt++] = x;
     }
 
-    for(auto i = 0; i < uints_cnt; ++i)
-    {
-       cout << uints[i] << endl;
-    }
 }
 
 void decode(uint64_t *code)
@@ -36,20 +32,30 @@ void decode(uint64_t *code)
     puts((char*)code);
 }
 
-int main()
+int main(const int argc, char **argv)
 {
-    const char *s = "Hurray, this works, phew!";
-    size_t text_len = strlen(s);
-    size_t num_uints = ceil (text_len * 1.0 / SIZEOF_UINT64_T);
-    uint64_t* code = (uint64_t*)malloc(sizeof(uint64_t[num_uints]));
-    
-    cout << "code is:" << endl;
-    encode_in_ull(s, code);
-    
-    cout << "decoding:" << endl;
-    decode(code);
+    const char *s = "Default string!";
 
-    free(code);
+    if (argc > 1)
+    {
+       const char *s = argv[1];
+       size_t text_len = strlen(s);
+       size_t num_uints = ceil (text_len * 1.0 / SIZEOF_UINT64_T);
+       uint64_t* code = (uint64_t*)malloc(sizeof(uint64_t[num_uints]));
+    
+       encode_in_ull(s, code);
+
+       cout << "code is:" << endl;
+       for(auto i = 0; i < num_uints; ++i)
+       {
+	  cout << code[i] << endl;
+       }
+    
+       cout << "decoding:" << endl;
+       decode(code);
+
+       free(code);
+    }
     
     return 0;
 }
