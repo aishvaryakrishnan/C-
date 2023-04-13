@@ -10,7 +10,14 @@
 class Expression
 {
 public:
-  Expression(const std::string &e) : expression(e) { }
+  Expression(const std::string &e) : expression(e)
+  {
+    for (auto &entry : brackets)
+    {	
+      open_brackets.insert(entry.first);
+      close_brackets.insert(entry.second);
+    }
+  }
   bool validate() const
   {
     // opting to consider empty expression as valid
@@ -75,8 +82,8 @@ public:
 private:
   std::string expression;
   std::unordered_map<char, char> brackets {{'{','}'}, {'(',')'}, {'[',']'}};
-  std::unordered_set<char> open_brackets {'{', '[', '('};
-  std::unordered_set<char> close_brackets {'}', ']', ')'};
+  std::unordered_set<char> open_brackets;
+  std::unordered_set<char> close_brackets;
 };
 
 int main(const int argc, const char **argv)
