@@ -45,8 +45,7 @@ public:
         // else, we have an imbalanced expression
         else if  (close_brackets.find(ch) != close_brackets.end())
         {
-            auto brackets_val = brackets.find(s.top());
-            if (brackets_val == brackets.end())
+	  if (brackets.find(s.top())->second != ch)
             {
                 return false;
             }
