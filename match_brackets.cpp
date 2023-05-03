@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <string.h>
 #include <math.h>
@@ -10,15 +9,7 @@
 class Expression
 {
 public:
-  Expression(const std::string &e) : expression(e)
-  {
-    for (auto &entry : brackets)
-    {	
-      open_brackets.insert(entry.first);
-      close_brackets.insert(entry.second);
-    }
-  }
-  bool validate() const
+  bool validate(const std::string &expression) const
   {
     // opting to consider empty expression as valid
     if (expression.empty())
@@ -29,30 +20,19 @@ public:
     std::stack<char> s;
     for (auto &ch : expression)
     {
-        // catch situations when char is not a bracket
-        if (open_brackets.find(ch) != open_brackets.end() && close_brackets.find(ch) != close_brackets.end() )
+        // if char we are reading is an open bracket:
+        // add to stack and continue
+        if  (brackets.find(ch) != brackets.end())
         {
-            return false;
-        } 
-        if (s.empty())
-        {
-            // we always want an open bracket first
-            if (open_brackets.find(ch) != open_brackets.end())
-            {
-                s.push(ch);
-            }
-            else
-            {
-                return false;
-            }
+            s.push(ch);
         }
-        // if char we are reading is a close bracket:
-        // and, top of stack is a matching bracket then
-        // remove the matching bracket and continue
-        // else, we have an imbalanced expression
-        else if  (close_brackets.find(ch) != close_brackets.end())
+        else
         {
-	  if (brackets.find(s.top())->second != ch)
+          // char we are reading is a closed bracket
+          // so if top of stack is a matching bracket then
+          // remove the matching bracket and continue
+          // else, we have an imbalanced expression
+          if (s.empty() || brackets.find(s.top())->second != ch)
             {
                 return false;
             }
@@ -60,12 +40,6 @@ public:
             {
                 s.pop();
             }
-        }
-        // if we are reading an open bracket, 
-        // add to stack and continue
-        else
-        {
-            s.push(ch);
         }
     }
 
@@ -80,11 +54,10 @@ public:
   };
 
 private:
-  std::string expression;
-  std::unordered_map<char, char> brackets {{'{','}'}, {'(',')'}, {'[',']'}};
-  std::unordered_set<char> open_brackets;
-  std::unordered_set<char> close_brackets;
+  static std::unordered_map<char, char> brackets;
 };
+
+std::unordered_map<char, char> Expression::brackets = {{'{','}'}, {'(',')'}, {'[',']'}};;
 
 int main(const int argc, const char **argv)
 {
@@ -92,8 +65,8 @@ int main(const int argc, const char **argv)
   std::cout << "enter an expression" << std::endl;
   std::getline(std::cin, expression);
 
-  Expression e(expression);
-  std::cout << (e.validate() ? "valid" : "invalid") << std::endl;
-
+  Expression e;
+  std::cout << (e.validate(expression) ? "valid" : "invalid") << std::endl;
+  
   return 0;
 }
