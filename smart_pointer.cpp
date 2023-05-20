@@ -4,7 +4,7 @@ template <typename T>
 class SmartSharedPointer
 {
 public:
-  SmartSharedPointer() : s_ptr(nullptr), s_ref_cnt(0) { }
+  SmartSharedPointer() : s_ptr(nullptr), s_ref_cnt(new uint32_t(new uint32_t(0))) { }
 
   explicit SmartSharedPointer(T *ptr) : s_ptr(ptr), s_ref_cnt(new uint32_t(1)) { }
 
@@ -13,11 +13,7 @@ public:
     s_ptr = shared_obj.s_ptr;
     s_ref_cnt = shared_obj.s_ref_cnt;
 
-    if(s_ptr)
-    {
-      ++(*s_ref_cnt);
-    }
-
+    ++(*s_ref_cnt);
   }
     
 
@@ -46,7 +42,7 @@ private:
   {
     --(*s_ref_cnt);
     
-    if (s_ref_cnt == 0)
+    if (*s_ref_cnt == 0)
     {
       delete s_ptr;
       delete s_ref_cnt;
